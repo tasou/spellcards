@@ -1,0 +1,10 @@
+package:
+  name: spellcards
+  version: 0.0.1
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
