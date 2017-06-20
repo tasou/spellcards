@@ -8,3 +8,5 @@ requirements:
     - setuptools
   run:
     - python
+    - lxml
+    - tqdm
