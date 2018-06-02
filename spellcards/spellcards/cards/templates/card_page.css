@@ -1,0 +1,68 @@
+* {
+    color: black;
+    font-family: arial;
+    font-size: 10px;
+}
+
+@page {
+    margin: 0cm;
+}
+
+body {
+    margin: 0;
+}
+
+page_boundary {
+    width: 850px;
+    height: 1100px;
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+card_boundary {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 300px;
+    height: 500px;
+}
+
+card_header {
+    border-style: solid;
+    border-color: coral;
+    background-color: coral;
+    flex: 1 1 %;
+    padding-left: 8px;
+}
+
+card_header b {
+    font-size: 25px;
+}
+
+card_body {
+    border-style: solid;
+    border-color: coral;
+    border-top-width: 0;
+    flex: 1 1 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 8px;
+}
+
+spell_header {
+    flex: 0 1 auto;
+}
+
+spell_description {
+    padding-top: 2%;
+    text-align: justify;
+}
+
+spell_description p {
+    margin-top: 0;
+    
+}
