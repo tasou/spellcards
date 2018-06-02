@@ -3,6 +3,8 @@ from lxml import html
 
 from itertools import product
 
+from ..pathfinder.spell import Spell
+
 class ParsingException(Exception): pass
 
 def requires_load(func):
@@ -46,6 +48,11 @@ class IndexPage(Page):
 
 
 class SpellListPage(Page):
+
+    @property_requires_load
+    def spells(self):
+        spells = zip(self.spells_urls, self.spell_short_descriptions)
+        return list(dict(spells).items())
 
     @property_requires_load
     def spells_urls(self):
@@ -111,16 +118,38 @@ class SpellPage(Page):
 
     @property_requires_load
     def saving_throw(self):
-        save_type = self.etree.xpath('//p[@class="stat-block-1"][b[text()="Saving Throw"]]/a/text()')
+        save_type, save_results = self._saving_throw_spell_resistance()[0]
 
+        return list(zip(save_type, save_results))
+
+    @property_requires_load
+    def spell_resistance(self):
+        return self._saving_throw_spell_resistance()[1]
+
+    def _saving_throw_spell_resistance(self):
+        save_type = self.etree.xpath('//p[@class="stat-block-1"][b[text()="Saving Throw"]]/a/text()')
         save_results = self.etree.xpath('//p[@class="stat-block-1"][b[text()="Saving Throw"]]/text()')[1:]
         save_results = list(map(lambda x: x.strip('; '), save_results))
-        save_results[-1] = save_results[-1] == 'yes'
-
-        return list(zip(save_type + ['Spell Resistance'], save_results))
+        return (save_type, save_results[:-1]), save_results[-1]
 
     @property_requires_load
     def description(self):
         description = self.etree.xpath('//div[@class="body"]/p[not(@class = "stat-block-1") and not(@class = "stat-block-title")]')
         description = '/n/n'.join([d.text_content() for d in description])
         return description
+
+    def load_spell(self):
+        return Spell(
+            self.name,
+            self.level,
+            self.school,
+            self.casting_time,
+            self.components,
+            self.area,
+            self.duration,
+            self.saving_throw,
+            self.spell_resistance,
+            self.range,
+            self.short_description,
+            self.description
+        )

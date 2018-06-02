@@ -13,6 +13,7 @@ Spell = namedtuple(
         'saving_throw',
         'spell_resistance',
         'range',
+        'short_description',
         'description'
     ]
 )

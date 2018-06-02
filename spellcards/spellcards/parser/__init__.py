@@ -1,1 +1,1 @@
-from .page import SpellPage, SpellListPage
+from .pages import SpellPage, SpellListPage

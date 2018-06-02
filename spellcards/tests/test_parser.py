@@ -1,28 +1,32 @@
-from spellcards.parser import page
+from spellcards.parser import pages
 
 import pytest
 
-pages = {
+
+page_data = {
     'index': open('./include/index.html', 'r').read(),
     'spell_list': open('./include/spell_list.html', 'r').read(),
-    'spell': open('./include/spell.html', 'r').read()
+    'fireball': open('./include/fireball.html', 'r').read(),
+    'dimension_door': open('./include/dimension_door.html', 'r').read()
 }
+
 
 @pytest.fixture(autouse=True)
 def mock_index_page(mocker, monkeypatch):
 
     def get_page_text(page):
         request_mock = mocker.Mock()
-        request_mock.read.return_value.decode.return_value = pages[page]
+        request_mock.read.return_value.decode.return_value = page_data[page]
         return request_mock
 
-    monkeypatch.setattr(page.request, 'urlopen', get_page_text)
+    monkeypatch.setattr(pages.request, 'urlopen', get_page_text)
+
 
 def test_requires_load(mocker):
 
-    class TestClass(page.Page):
+    class TestClass(pages.Page):
 
-        @page.property_requires_load
+        @pages.property_requires_load
         def test_property(self):
             pass
 
@@ -37,7 +41,7 @@ def test_requires_load(mocker):
 
 
 def test_index_page():
-    index_page = page.IndexPage('index')
+    index_page = pages.IndexPage('index')
     assert index_page.spell_page_urls == [
         'http://paizo.com/pathfinderRPG/prd/coreRulebook/spellLists.html',
         'http://paizo.com/pathfinderRPG/prd/advancedClassGuide/spells/spellLists.html',
@@ -48,23 +52,24 @@ def test_index_page():
         'http://paizo.com/pathfinderRPG/prd/ultimateMagic/ultimateMagicSpellLists.html'
     ]
 
+
 def test_spell_list():
-    spell_list_page = page.SpellListPage('spell_list')
+    spell_list_page = pages.SpellListPage('spell_list')
     spells = spell_list_page.spells_urls
     assert 'http://paizo.com/pathfinderRPG/prd/coreRulebook/spells/fireball.html#fireball' in spells
     assert len(spells) == 1041
 
 def test_spell_short_descriptions():
-    spell_list_page = page.SpellListPage('spell_list')
+    spell_list_page = pages.SpellListPage('spell_list')
     descriptions = spell_list_page.spell_short_descriptions
     assert '1d6 damage per level, 20-ft. radius.' in descriptions
     assert len(descriptions) == 1041
 
-@pytest.fixture
-def spell_page():
-    sample_spell_page = page.SpellPage('spell', 'description')
+def spell_page(spell):
+    sample_spell_page = pages.SpellPage(spell, 'description')
     return sample_spell_page
 
+@pytest.
 def test_spell_name(spell_page):
     assert spell_page.name == 'Fireball'
 
@@ -87,7 +92,10 @@ def test_duration(spell_page):
     assert spell_page.duration == 'instantaneous'
 
 def test_save(spell_page):
-    assert spell_page.saving_throw == [('Reflex', 'half'), ('Spell Resistance', True)]
+    assert spell_page.saving_throw == [('Reflex', 'half')]
+
+def test_spell_resistance(spell_page):
+    assert spell_page.spell_resistance == 'yes'
 
 def test_description(spell_page):
     assert spell_page.description.startswith('A fireball spell generates a searing explosion of flame that detonates with a low roar and deals 1d6 points of fire damage')

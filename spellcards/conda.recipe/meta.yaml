@@ -7,6 +7,9 @@ requirements:
     - python
     - setuptools
   run:
-    - python
+    - click
     - lxml
+    - python
     - tqdm
+  test:
+    - pytest

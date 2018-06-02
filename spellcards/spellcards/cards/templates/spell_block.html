@@ -1,0 +1,22 @@
+<card_boundary>
+    <card_header>
+        <b>${spell.name}</b>
+    </card_header>
+    <card_body>
+        <spell_header><b>Level</b>${spell.level}</spell_header>
+        <spell_header><b>School</b>${spell.school}</spell_header>
+        <spell_header><b>Casting Time</b>${spell.casting_time}</spell_header>
+        <spell_header><b>Components</b>${spell.components}</spell_header>
+        <spell_header><b>Range</b>${spell.range}</spell_header>
+        <spell_header><b>Area</b>${spell.area}</spell_header>
+        <spell_header><b>Duration</b>${spell.duration}</spell_header>
+        <spell_header><b>Saving Throw</b>${spell.saving_throw}</spell_header>
+        <spell_header><b>Spell Resistance</b>${spell.spell_resistance}</spell_header>
+        <spell_description>
+            % for description in spell.description:
+            <p>${description}</p>
+
+            %endfor
+       </spell_description>
+    </card_body>
+</card_boundary>
